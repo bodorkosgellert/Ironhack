@@ -1,0 +1,141 @@
+{
+  "state": "Alabama",
+  "year": 2023,
+  "n_counties": 67,
+  "pearson_correlation_matrix": {
+    "asthma_pct": {
+      "asthma_pct": 1.0,
+      "pm25_ug_m3_annual_mean": -0.0573,
+      "smoking_pct": 0.667,
+      "obesity_pct": 0.8646,
+      "diabetes_pct": 0.8926,
+      "no_physical_activity_pct": 0.8546,
+      "binge_drinking_pct": -0.901
+    },
+    "pm25_ug_m3_annual_mean": {
+      "asthma_pct": -0.0573,
+      "pm25_ug_m3_annual_mean": 1.0,
+      "smoking_pct": -0.1305,
+      "obesity_pct": -0.0861,
+      "diabetes_pct": -0.1238,
+      "no_physical_activity_pct": -0.1041,
+      "binge_drinking_pct": 0.1794
+    },
+    "smoking_pct": {
+      "asthma_pct": 0.667,
+      "pm25_ug_m3_annual_mean": -0.1305,
+      "smoking_pct": 1.0,
+      "obesity_pct": 0.6746,
+      "diabetes_pct": 0.7951,
+      "no_physical_activity_pct": 0.9044,
+      "binge_drinking_pct": -0.6677
+    },
+    "obesity_pct": {
+      "asthma_pct": 0.8646,
+      "pm25_ug_m3_annual_mean": -0.0861,
+      "smoking_pct": 0.6746,
+      "obesity_pct": 1.0,
+      "diabetes_pct": 0.8683,
+      "no_physical_activity_pct": 0.8312,
+      "binge_drinking_pct": -0.8395
+    },
+    "diabetes_pct": {
+      "asthma_pct": 0.8926,
+      "pm25_ug_m3_annual_mean": -0.1238,
+      "smoking_pct": 0.7951,
+      "obesity_pct": 0.8683,
+      "diabetes_pct": 1.0,
+      "no_physical_activity_pct": 0.9539,
+      "binge_drinking_pct": -0.959
+    },
+    "no_physical_activity_pct": {
+      "asthma_pct": 0.8546,
+      "pm25_ug_m3_annual_mean": -0.1041,
+      "smoking_pct": 0.9044,
+      "obesity_pct": 0.8312,
+      "diabetes_pct": 0.9539,
+      "no_physical_activity_pct": 1.0,
+      "binge_drinking_pct": -0.8884
+    },
+    "binge_drinking_pct": {
+      "asthma_pct": -0.901,
+      "pm25_ug_m3_annual_mean": 0.1794,
+      "smoking_pct": -0.6677,
+      "obesity_pct": -0.8395,
+      "diabetes_pct": -0.959,
+      "no_physical_activity_pct": -0.8884,
+      "binge_drinking_pct": 1.0
+    }
+  },
+  "partial_correlations_vs_asthma": {
+    "partial_r_pm25_ug_m3_annual_mean_vs_asthma": 0.1996,
+    "partial_r_smoking_pct_vs_asthma": -0.0168,
+    "partial_r_obesity_pct_vs_asthma": 0.4053,
+    "partial_r_diabetes_pct_vs_asthma": -0.0965,
+    "partial_r_no_physical_activity_pct_vs_asthma": 0.1051,
+    "partial_r_binge_drinking_pct_vs_asthma": -0.348
+  },
+  "models": [
+    {
+      "model": "pm25_only",
+      "features": [
+        "pm25_ug_m3_annual_mean"
+      ],
+      "r2_test": 0.03108173528880609,
+      "mae_test": 0.5095660802704913,
+      "r2_cv_mean": -0.321694185275063,
+      "r2_cv_std": 0.6448019534636759,
+      "feature_importance": {
+        "pm25_ug_m3_annual_mean": 1.0
+      },
+      "n_counties": 67
+    },
+    {
+      "model": "confounders_only",
+      "features": [
+        "smoking_pct",
+        "obesity_pct",
+        "diabetes_pct",
+        "no_physical_activity_pct",
+        "binge_drinking_pct"
+      ],
+      "r2_test": 0.8600361138173505,
+      "mae_test": 0.18181509421950307,
+      "r2_cv_mean": 0.7571079878995148,
+      "r2_cv_std": 0.11196762499663952,
+      "feature_importance": {
+        "smoking_pct": 0.03423056731452531,
+        "obesity_pct": 0.10253603185206477,
+        "diabetes_pct": 0.48250678997287766,
+        "no_physical_activity_pct": 0.07020265465986908,
+        "binge_drinking_pct": 0.31052395620066314
+      },
+      "n_counties": 67
+    },
+    {
+      "model": "pm25_plus_confounders",
+      "features": [
+        "pm25_ug_m3_annual_mean",
+        "smoking_pct",
+        "obesity_pct",
+        "diabetes_pct",
+        "no_physical_activity_pct",
+        "binge_drinking_pct"
+      ],
+      "r2_test": 0.8534761863765458,
+      "mae_test": 0.20497055640438167,
+      "r2_cv_mean": 0.7567468633749153,
+      "r2_cv_std": 0.10250234997308118,
+      "feature_importance": {
+        "pm25_ug_m3_annual_mean": 0.0237817706630361,
+        "smoking_pct": 0.03218362354507293,
+        "obesity_pct": 0.0945449039274225,
+        "diabetes_pct": 0.4700269148656274,
+        "no_physical_activity_pct": 0.07397306233603852,
+        "binge_drinking_pct": 0.30548972466280266
+      },
+      "n_counties": 67
+    }
+  ],
+  "interpretation": "Partial correlation removes linear effects of other county health metrics. Multivariate models test whether PM2.5 adds predictive value beyond smoking/obesity/diabetes/etc. Higher R\u00b2 here means better county-level prediction, not proof of causation."
+}

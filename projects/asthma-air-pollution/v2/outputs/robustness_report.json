@@ -1,0 +1,136 @@
+{
+  "purpose": "Demonstrate that weak PM2.5\u2013asthma association is consistent across statistical tests and contrasts with a working positive control \u2014 arguing against analytics/data-join failure as the main explanation.",
+  "data_integrity": {
+    "n_counties": 67,
+    "unique_county_fips": 67,
+    "duplicate_fips": 0,
+    "missing_values": {
+      "asthma_pct": 0,
+      "pm25_ug_m3_annual_mean": 0,
+      "smoking_pct": 0,
+      "obesity_pct": 0,
+      "diabetes_pct": 0,
+      "no_physical_activity_pct": 0,
+      "binge_drinking_pct": 0
+    },
+    "asthma_within_cdc_ci": 67,
+    "asthma_range": [
+      9.3,
+      12.0
+    ],
+    "pm25_range": [
+      9.352465753424658,
+      11.73332191780822
+    ],
+    "pm25_coefficient_of_variation": 0.03469709687386365
+  },
+  "pm25_asthma_association": {
+    "pearson_r": -0.0573,
+    "spearman_r": -0.042,
+    "partial_r_controlling_confounders": 0.1996,
+    "r_squared_upper_bound": 0.0033,
+    "bootstrap_95ci": {
+      "mean": -0.0518,
+      "ci_low": -0.2785,
+      "ci_high": 0.1971,
+      "std": 0.122
+    },
+    "permutation_test": {
+      "observed_abs_r": 0.0573,
+      "null_mean_abs_r": 0.0991,
+      "p_value_two_sided": 0.646,
+      "n_permutations": 5000
+    },
+    "leave_one_out": {
+      "min": -0.1276,
+      "max": 0.0118,
+      "mean": -0.0571,
+      "std": 0.0161
+    },
+    "fisher_critical_abs_r_n67_alpha05": 0.2362
+  },
+  "positive_control_obesity": {
+    "pearson_r": 0.8646,
+    "partial_r": 0.4053,
+    "bootstrap_95ci": {
+      "mean": 0.8617,
+      "ci_low": 0.7834,
+      "ci_high": 0.9165,
+      "std": 0.0343
+    },
+    "leave_one_out": {
+      "min": 0.8507,
+      "max": 0.8752,
+      "mean": 0.8646,
+      "std": 0.0043
+    }
+  },
+  "confounders_only_model": {
+    "r2_test": 0.86,
+    "r2_cv_mean": 0.7571
+  },
+  "negative_control_shuffled_pm25": {
+    "example_single_shuffle_r": -0.1596,
+    "note": "One random permutation; full null in permutation_test."
+  },
+  "verdict_checks": [
+    {
+      "check": "data_integrity",
+      "passes": true,
+      "meaning": "One row per county FIPS; no duplicate joins."
+    },
+    {
+      "check": "positive_control_obesity",
+      "passes": true,
+      "meaning": "Pipeline detects strong known county-level association."
+    },
+    {
+      "check": "confounders_model_works",
+      "passes": true,
+      "meaning": "Multivariate stack is not broken \u2014 weak PM2.5 is not global failure."
+    },
+    {
+      "check": "pm25_estimators_agree",
+      "passes": true,
+      "meaning": "Pearson and Spearman both show negligible linear/monotone link."
+    },
+    {
+      "check": "pm25_bootstrap_ci_includes_zero",
+      "passes": true,
+      "meaning": "Cannot reject null of zero association at ~95% bootstrap CI."
+    },
+    {
+      "check": "pm25_below_detection_threshold",
+      "passes": true,
+      "meaning": "|r|=0.057 is below ~0.24 needed for n=67 significance."
+    },
+    {
+      "check": "permutation_not_significant",
+      "passes": true,
+      "meaning": "Shuffled PM2.5 labels produce similar |r| as often as observed."
+    },
+    {
+      "check": "leave_one_out_stable",
+      "passes": true,
+      "meaning": "PM2.5 correlation does not hinge on one outlier county."
+    },
+    {
+      "check": "low_pm25_variance",
+      "passes": true,
+      "meaning": "Narrow PM2.5 spread limits how much variance asthma can explain."
+    }
+  ],
+  "all_checks_pass": true,
+  "interpretation_for_portfolio": "If the data pipeline were mis-joined or analytically broken, we would not recover R\u00b2\u22480.86 on confounders and r\u22480.86 for obesity with bootstrap CI excluding zero. PM2.5 instead shows |r|<0.1, CI including zero, permutation p>0.05, and negligible incremental R\u00b2 \u2014 consistent with inherently weak county-level PM2.5 signal after shared health burden, plus limited PM2.5 geographic contrast across Alabama.",
+  "epidemiology_context": [
+    "County ecological studies aggregate heterogeneous individuals; true individual-level effects attenuate.",
+    "Asthma prevalence reflects diagnosis, access to care, and genetics \u2014 not only air quality.",
+    "Alabama counties have similar regional PM2.5 (modelled ~9\u201312 \u00b5g/m\u00b3); low exposure contrast reduces statistical power.",
+    "Literature: air pollution effects on asthma are often clearer in longitudinal cohort or patient-level studies than crude county maps."
+  ],
+  "v1_vs_v2_matching": {
+    "v1_risk": "Census-tract asthma (1175 rows) merged with monitor PM2.5 via concat/manual Excel \u2014 alignment uncertain.",
+    "v2_fix": "County FIPS join; same PLACES geolocation for PM2.5 centroid; 67 counties one row each.",
+    "implication": "v2 weak result is more trustworthy than v1; v1 weak result may have mixed matching noise with true signal."
+  }
+}

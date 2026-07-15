@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Large / local-only bootcamp assets
+*.xlsx
+archive/bootcamp-original/real_estate_prices.ipynb
+
+# v2 generated artifacts (reproducible from scripts)
+projects/asthma-air-pollution/v2/outputs/*.csv
+!projects/asthma-air-pollution/v2/outputs/metrics.json
+!projects/asthma-air-pollution/v2/outputs/multivariate_metrics.json
+!projects/asthma-air-pollution/v2/outputs/robustness_report.json
+!projects/asthma-air-pollution/v2/outputs/feature_analysis.json
+projects/asthma-air-pollution/v2/figures/*
+!projects/asthma-air-pollution/v2/figures/pm25_vs_asthma_scatter.png
+!projects/asthma-air-pollution/v2/figures/correlation_heatmap.png
+!projects/asthma-air-pollution/v2/figures/pm25_obesity_variance_histogram.png
+!projects/asthma-air-pollution/v2/figures/permutation_importance.png
+
+# OS / editor
+.DS_Store
+Thumbs.db
+_test_*.py

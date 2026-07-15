@@ -1,0 +1,170 @@
+{
+  "n_counties": 67,
+  "variance_analysis": {
+    "pm25_ug_m3_annual_mean": {
+      "mean": 10.101469706263202,
+      "std": 0.3504916729666133,
+      "min": 9.352465753424658,
+      "max": 11.73332191780822,
+      "range": 2.3808561643835624,
+      "cv": 0.03469709687386365
+    },
+    "obesity_pct": {
+      "mean": 41.7268656716418,
+      "std": 4.3938518371163795,
+      "min": 31.7,
+      "max": 52.9,
+      "range": 21.2,
+      "cv": 0.10530030871938956
+    },
+    "diabetes_pct": {
+      "mean": 16.802985074626864,
+      "std": 3.3204129968229603,
+      "min": 11.2,
+      "max": 27.1,
+      "range": 15.900000000000002,
+      "cv": 0.1976085190861062
+    },
+    "asthma_pct": {
+      "mean": 10.482089552238806,
+      "std": 0.6235104366297007,
+      "min": 9.3,
+      "max": 12.0,
+      "range": 2.6999999999999993,
+      "cv": 0.05948341058549046
+    }
+  },
+  "variance_interpretation": "Lower coefficient of variation (CV) means less relative spread across counties. PM2.5 with low CV has limited leverage for explaining asthma differences.",
+  "mae_with_vs_without_pm25": {
+    "mae_test_with_pm25": 0.20497055640438167,
+    "mae_test_without_pm25": 0.18181509421950307,
+    "mae_delta_full_minus_no_pm25": 0.0231554621848786,
+    "removing_pm25_improves_mae": true,
+    "interpretation": "Positive delta means confounders-only model has lower MAE on the holdout set; PM2.5 adds noise or overfitting, not signal."
+  },
+  "permutation_importance": {
+    "scoring": "neg_mean_absolute_error",
+    "n_repeats": 30,
+    "ranked": [
+      {
+        "feature": "diabetes_pct",
+        "importance_mean": 0.16324682016240824,
+        "importance_std": 0.04068733079039398
+      },
+      {
+        "feature": "binge_drinking_pct",
+        "importance_mean": 0.1352902691009053,
+        "importance_std": 0.03411443854458553
+      },
+      {
+        "feature": "obesity_pct",
+        "importance_mean": 0.026906171306905632,
+        "importance_std": 0.010937062688474922
+      },
+      {
+        "feature": "no_physical_activity_pct",
+        "importance_mean": 0.01866677715530684,
+        "importance_std": 0.00851721618265172
+      },
+      {
+        "feature": "smoking_pct",
+        "importance_mean": 0.006818752463949151,
+        "importance_std": 0.005139321659470292
+      },
+      {
+        "feature": "pm25_ug_m3_annual_mean",
+        "importance_mean": -0.01280687510021019,
+        "importance_std": 0.007383044640174196
+      }
+    ]
+  },
+  "forward_selection_sklearn": {
+    "selected_features": [
+      "pm25_ug_m3_annual_mean",
+      "obesity_pct",
+      "binge_drinking_pct"
+    ],
+    "pm25_selected": true,
+    "n_selected": 3,
+    "mae_test_forward_selection": 0.21296606117194425,
+    "r2_test_forward_selection": 0.8544545315154393
+  },
+  "forward_selection_greedy_steps": [
+    {
+      "step": 1,
+      "added": "binge_drinking_pct",
+      "features": [
+        "binge_drinking_pct"
+      ],
+      "mae_test": 0.21013265427382932,
+      "pm25_included": false
+    },
+    {
+      "step": 2,
+      "added": "no_physical_activity_pct",
+      "features": [
+        "binge_drinking_pct",
+        "no_physical_activity_pct"
+      ],
+      "mae_test": 0.16684891774891414,
+      "pm25_included": false
+    },
+    {
+      "step": 3,
+      "added": "smoking_pct",
+      "features": [
+        "binge_drinking_pct",
+        "no_physical_activity_pct",
+        "smoking_pct"
+      ],
+      "mae_test": 0.17218125512831078,
+      "pm25_included": false
+    },
+    {
+      "step": 4,
+      "added": "diabetes_pct",
+      "features": [
+        "binge_drinking_pct",
+        "no_physical_activity_pct",
+        "smoking_pct",
+        "diabetes_pct"
+      ],
+      "mae_test": 0.17395331395184416,
+      "pm25_included": false
+    },
+    {
+      "step": 5,
+      "added": "obesity_pct",
+      "features": [
+        "binge_drinking_pct",
+        "no_physical_activity_pct",
+        "smoking_pct",
+        "diabetes_pct",
+        "obesity_pct"
+      ],
+      "mae_test": 0.1815004951475513,
+      "pm25_included": false
+    },
+    {
+      "step": 6,
+      "added": "pm25_ug_m3_annual_mean",
+      "features": [
+        "binge_drinking_pct",
+        "no_physical_activity_pct",
+        "smoking_pct",
+        "diabetes_pct",
+        "obesity_pct",
+        "pm25_ug_m3_annual_mean"
+      ],
+      "mae_test": 0.20470830928331155,
+      "pm25_included": true
+    }
+  ],
+  "pm25_permutation_rank": 6,
+  "outputs": {
+    "json": "feature_analysis.json",
+    "residuals_csv": "county_residuals_confounders_only.csv",
+    "histogram_figure": "pm25_obesity_variance_histogram.png",
+    "permutation_figure": "permutation_importance.png"
+  }
+}

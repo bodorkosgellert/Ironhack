@@ -1,0 +1,6 @@
+pandas>=2.0
+matplotlib>=3.8
+seaborn>=0.13
+scikit-learn>=1.4
+jupyter>=1.0
+streamlit>=1.32
