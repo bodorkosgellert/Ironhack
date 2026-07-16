@@ -12,6 +12,8 @@ Open the [live Version 2 dashboard](https://ironhack-fk9xtt3fmoama8fdpvbzj.strea
 streamlit run streamlit_app.py
 ```
 
+This dashboard does not embed the local large language model assistant. For cited question answering over the public project corpus, use the separate app in [`projects/local-llm-demo`](../../local-llm-demo/) (`streamlit run streamlit_app.py` from that directory).
+
 ## Requirements
 
 - Python 3.10 or later

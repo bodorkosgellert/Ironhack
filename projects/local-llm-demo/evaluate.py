@@ -14,9 +14,14 @@ DEFAULT_CASES = HERE / "evaluation" / "benchmarks.json"
 DEFAULT_OUTPUT = HERE / "outputs" / "benchmark.json"
 
 
-def run(cases_path: Path = DEFAULT_CASES, output_path: Path = DEFAULT_OUTPUT) -> dict:
+def run(
+    cases_path: Path = DEFAULT_CASES,
+    output_path: Path = DEFAULT_OUTPUT,
+    *,
+    retrieval: str = "tfidf",
+) -> dict:
     cases = json.loads(cases_path.read_text(encoding="utf-8"))
-    assistant = EvidenceAssistant()
+    assistant = EvidenceAssistant(retrieval_mode=retrieval)
     records: list[dict] = []
 
     for case in cases:
@@ -38,6 +43,7 @@ def run(cases_path: Path = DEFAULT_CASES, output_path: Path = DEFAULT_OUTPUT) ->
                 "refused": answer.refused,
                 "elapsed_ms": elapsed_ms,
                 "top_score": answer.passages[0].score if answer.passages else None,
+                "retrieval_mode": answer.retrieval_mode,
                 "sources": sources,
                 "locators": locators,
             }
@@ -47,6 +53,7 @@ def run(cases_path: Path = DEFAULT_CASES, output_path: Path = DEFAULT_OUTPUT) ->
         "total": len(records),
         "passed": sum(record["passed"] for record in records),
         "failed": sum(not record["passed"] for record in records),
+        "retrieval": retrieval,
         "records": records,
     }
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -58,8 +65,14 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--cases", type=Path, default=DEFAULT_CASES)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument(
+        "--retrieval",
+        choices=("tfidf", "dense", "hybrid"),
+        default="tfidf",
+        help="Retrieval mode for the deterministic benchmark (default: tfidf)",
+    )
     args = parser.parse_args()
-    summary = run(args.cases, args.output)
+    summary = run(args.cases, args.output, retrieval=args.retrieval)
     print(f"Benchmark: {summary['passed']}/{summary['total']} passed; {summary['failed']} failed")
     print(f"Wrote {args.output}")
     if summary["failed"]:

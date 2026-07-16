@@ -12,7 +12,9 @@ Version 1 is my original bootcamp work. I developed the 2026 restructuring, Vers
 - [Version 2 source and technical runbook](v2/)
 - [Statistical validation](v2/VALIDATION.md)
 - [Literature and study-design comparison](LITERATURE.md)
-- [Local cited evidence assistant](../local-llm-demo/)
+- [Local cited evidence assistant](../local-llm-demo/) (separate Streamlit app; not embedded in this dashboard)
+
+The Version 2 epidemiology dashboard and the local evidence assistant are different applications. Launch the dashboard with `streamlit run streamlit_app.py` from `v2/`. Launch the assistant from `projects/local-llm-demo` with `streamlit run streamlit_app.py` after Ollama is running if you want local narration. See the [assistant README](../local-llm-demo/README.md) for hybrid retrieval, Streamlit Cloud limits, and the honest privacy framing for future confidential corpora.
 
 ## Result summary
 

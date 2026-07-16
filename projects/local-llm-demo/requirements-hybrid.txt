@@ -1,0 +1,4 @@
+# Optional dense retrieval for local hybrid search.
+# Not required for the default TF-IDF path, unit tests, or Streamlit Community Cloud.
+# First install downloads the all-MiniLM-L6-v2 model weights (network required once).
+sentence-transformers>=3.0
