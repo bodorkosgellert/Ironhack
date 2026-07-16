@@ -24,6 +24,12 @@ projects/asthma-air-pollution/v2/figures/*
 !projects/asthma-air-pollution/v2/figures/pm25_obesity_variance_histogram.png
 !projects/asthma-air-pollution/v2/figures/permutation_importance.png
 
+# Local cited assistant generated artifacts
+projects/local-llm-demo/data/chunks.jsonl
+projects/local-llm-demo/outputs/benchmark.json
+projects/local-llm-demo/outputs/model_comparison*.*
+projects/local-llm-demo/.rag-cache/
+
 # OS / editor
 .DS_Store
 Thumbs.db

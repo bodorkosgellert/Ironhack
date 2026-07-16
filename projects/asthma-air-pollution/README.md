@@ -1,12 +1,32 @@
 # Asthma prevalence and air pollution
 
-I began this project as my 2021 Ironhack capstone and rebuilt it in 2026 to make the data integration reproducible and the scientific interpretation more careful.
-
-## Research question
-
 I ask whether annual mean fine particulate matter with an aerodynamic diameter of 2.5 micrometres or less, known as PM2.5, is associated with current adult asthma prevalence across Alabama counties.
 
-This is an ecological, cross-sectional analysis. Its unit is a county, not a person. It can describe county-level patterns and predictive performance, but it cannot estimate an individual causal effect.
+I began this project as my 2021 Ironhack capstone and rebuilt it in 2026 to make the data integration reproducible and the scientific interpretation more careful.
+
+Version 1 is my original bootcamp work. I developed the 2026 restructuring, Version 2, documentation, and dashboard iteratively with Cursor's coding agent under my direction and review. The repository's [AI-assisted development disclosure](../../AI_ASSISTED_DEVELOPMENT.md) explains the development and verification roles.
+
+## Live demonstration
+
+- [Live Version 2 dashboard](https://ironhack-fk9xtt3fmoama8fdpvbzj.streamlit.app/)
+- [Version 2 source and technical runbook](v2/)
+- [Statistical validation](v2/VALIDATION.md)
+- [Literature and study-design comparison](LITERATURE.md)
+- [Local cited evidence assistant](../local-llm-demo/) (separate Streamlit app; not embedded in this dashboard)
+
+The Version 2 epidemiology dashboard and the local evidence assistant are different applications. Launch the dashboard with `streamlit run streamlit_app.py` from `v2/`. Launch the assistant from `projects/local-llm-demo` with `streamlit run streamlit_app.py` after Ollama is running if you want local narration. See the [assistant README](../local-llm-demo/README.md) for hybrid retrieval, Streamlit Cloud limits, and the honest privacy framing for future confidential corpora.
+
+## Result summary
+
+The raw Pearson correlation between PM2.5 and asthma prevalence is approximately negative 0.06. In one holdout split, a PM2.5-only random forest produced R² near 0.03. Cross-validated R² is negative in the current outputs, indicating poor out-of-sample performance. Negative R² means the model performed worse than predicting the target mean on the evaluated data.
+
+The five county health indicators fit asthma prevalence much more closely. Their random forest produced holdout R² near 0.86 and mean cross-validated R² near 0.76. Obesity alone correlates with asthma at approximately 0.86.
+
+I interpret those large values cautiously. Asthma and all five indicators are model-based Centers for Disease Control and Prevention PLACES estimates derived through related source methodology. Strong fit can reflect shared source structure and correlated population-health patterns. It is not causal evidence. The holdout contains approximately 17 counties from only 67 total counties, so its metrics are uncertain. Cross-validation is more informative, although it remains limited by the small sample and correlated predictors.
+
+The adjusted PM2.5 association is approximately positive 0.20 after linear adjustment for the five health indicators. I treat this as a suppression or collinearity-sensitive adjusted association, not a causal effect. PM2.5 did not improve holdout or cross-validated prediction after those indicators were included.
+
+The current result supports a narrow conclusion: annual mean PM2.5 is not a useful predictor of model-based adult asthma prevalence across Alabama counties in this dataset. It does not indicate that particulate pollution is harmless.
 
 ## Project versions
 
@@ -17,7 +37,7 @@ This is an ecological, cross-sectional analysis. Its unit is a county, not a per
 
 The original 2021 write-up remains unchanged in [`v1/ORIGINAL_README.md`](v1/ORIGINAL_README.md). I document corrections without altering that historical record.
 
-## Version 2 data
+## Data and methods
 
 Version 2 contains one row for each of Alabama's 67 counties.
 
@@ -26,25 +46,26 @@ Version 2 contains one row for each of Alabama's 67 counties.
 - The correlated county health indicators are smoking prevalence, obesity prevalence, diabetes prevalence, physical inactivity prevalence, and binge drinking prevalence.
 - Counties are joined with Federal Information Processing Standards (FIPS) codes.
 
-Version 2 does not include access to care or urbanicity.
+Version 2 does not include access to care or urbanicity. This is an ecological, cross-sectional analysis whose unit is a county, not a person. It can describe county-level patterns and predictive performance, but it cannot estimate an individual causal effect.
 
-## Main result
-
-The raw Pearson correlation between PM2.5 and asthma prevalence is approximately negative 0.06. In one holdout split, a PM2.5-only random forest produced R² near 0.03. Cross-validated R² is negative in the current outputs, indicating poor out-of-sample performance. Negative R² means the model performed worse than predicting the target mean on the evaluated data.
-
-The five county health indicators fit asthma prevalence much more closely. Their random forest produced holdout R² near 0.86 and mean cross-validated R² near 0.76. Obesity alone correlates with asthma at approximately 0.86.
-
-I interpret those large values cautiously. Asthma and all five indicators are model-based CDC PLACES estimates derived through related source methodology. Strong fit can reflect shared source structure and correlated population-health patterns. It is not causal evidence. The holdout contains approximately 17 counties from only 67 total counties, so its metrics are uncertain. Cross-validation is more informative, although it remains limited by the small sample and correlated predictors.
-
-The adjusted PM2.5 association is approximately positive 0.20 after linear adjustment for the five health indicators. I treat this as a suppression or collinearity-sensitive adjusted association, not a causal effect. PM2.5 did not improve holdout or cross-validated prediction after those indicators were included.
-
-## Scientific interpretation
-
-The current result supports a narrow conclusion: annual mean PM2.5 is not a useful predictor of model-based adult asthma prevalence across Alabama counties in this dataset.
-
-It does not indicate that particulate pollution is harmless. The PM2.5 coefficient of variation is approximately 0.035, so the limited exposure contrast reduces detectable association and statistical power in this design. County aggregation can also obscure local exposure differences.
+| Version 1 limitation | Version 2 approach |
+|---|---|
+| Local source files were unavailable | Public data downloads are scripted |
+| Row concatenation did not establish a geographic key join | County rows are merged by FIPS code |
+| Geography and units were unclear | County resolution and PM2.5 units are documented |
+| Evaluation relied on individual splits | Holdout metrics are supplemented with cross-validation and resampling |
 
 Chronic asthma prevalence, asthma incidence, and acute asthma exacerbations are distinct outcomes. Annual exposure may be relevant to chronic health, but short-term PM2.5 spikes are better studied with daily outcomes and lagged exposure designs when the question concerns acute exacerbations.
+
+## Limitations
+
+- There are only 67 observations.
+- The outcome and health indicators share CDC PLACES source methodology.
+- County centroids do not represent exposure throughout a county.
+- Annual averages cannot test short-term exposure lags.
+- Ecological associations cannot be transferred to individuals.
+- Correlated predictors make coefficients and model importance unstable.
+- The PM2.5 coefficient of variation is approximately 0.035, so limited exposure contrast reduces detectable association and statistical power.
 
 ## Quick start
 
@@ -63,25 +84,7 @@ streamlit run streamlit_app.py
 
 The data download generally takes one to three minutes because it requests air-quality estimates county by county. The analysis scripts write JavaScript Object Notation metrics, comma-separated value tables, and figures under `v2/outputs/` and `v2/figures/`.
 
-## What changed in the rebuild
-
-| Version 1 limitation | Version 2 approach |
-|---|---|
-| Local source files were unavailable | Public data downloads are scripted |
-| Row concatenation did not establish a geographic key join | County rows are merged by FIPS code |
-| Geography and units were unclear | County resolution and PM2.5 units are documented |
-| Evaluation relied on individual splits | Holdout metrics are supplemented with cross-validation and resampling |
-
-## Limitations
-
-- There are only 67 observations.
-- The outcome and health indicators share CDC PLACES source methodology.
-- County centroids do not represent exposure throughout a county.
-- Annual averages cannot test short-term exposure lags.
-- Ecological associations cannot be transferred to individuals.
-- Correlated predictors make coefficients and model importance unstable.
-
-## Documentation
+## Documentation map
 
 - [`v2/README.md`](v2/README.md): technical runbook
 - [`v2/VALIDATION.md`](v2/VALIDATION.md): statistical evidence and uncertainty

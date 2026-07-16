@@ -6,9 +6,9 @@ This repository brings together my Ironhack Data Analytics bootcamp work from 20
 
 | Area | Description |
 |---|---|
-| [`projects/asthma-air-pollution/`](projects/asthma-air-pollution/) | My capstone investigation of fine particulate matter and adult asthma prevalence, including the original analysis and a reproducible 2026 rebuild |
-| [`projects/local-llm-demo/`](projects/local-llm-demo/) | A planned local large language model and retrieval-augmented generation experiment |
-| [`learning/`](learning/) | Notes on my continuing technical education |
+| [`projects/asthma-air-pollution/`](projects/asthma-air-pollution/) | Fine particulate matter and adult asthma prevalence: [Live demo](https://ironhack-fk9xtt3fmoama8fdpvbzj.streamlit.app/) · [Source](projects/asthma-air-pollution/v2/) |
+| [`projects/local-llm-demo/`](projects/local-llm-demo/) | A local cited evidence assistant with deterministic metric routing and model evaluation |
+| [`learning/`](learning/) | Notes and a roadmap for my continuing technical education |
 | [`labs/`](labs/) | Selected classroom exercises in Python, Structured Query Language, natural language processing, and computer vision |
 | [`archive/bootcamp-original/`](archive/bootcamp-original/) | The original bootcamp upload, preserved without editorial changes |
 
@@ -20,10 +20,16 @@ Version 2 uses 67 counties, a reproducible county key, Centers for Disease Contr
 
 Read the [project overview](projects/asthma-air-pollution/README.md) for the research question, results, limitations, and reproduction steps.
 
+The companion [local evidence assistant](projects/local-llm-demo/) provides cited navigation across the project's public methods, literature, and saved outputs. Its [evaluation](projects/local-llm-demo/MODEL_EVALUATION.md) distinguishes unreliable raw model generation from hardened assistant behavior.
+
+## Development provenance
+
+Version 1 reflects my original bootcamp work. The 2026 restructuring, Version 2, dashboard, documentation, and local evidence assistant were developed iteratively with Cursor's coding agent under my direction and review. See the [AI-assisted development disclosure](AI_ASSISTED_DEVELOPMENT.md) for the division of responsibility and verification approach.
+
 ## Archive policy
 
 I keep `archive/bootcamp-original/` as a historical record of the files originally uploaded after the bootcamp. Curated copies and retrospective corrections are located elsewhere in the repository. The preserved archive may contain terminology or methods that I would describe differently today.
 
 ## Reuse and attribution
 
-Some laboratory materials reflect Ironhack coursework. My capstone analysis and later project documentation are my own work. Paid or proprietary course content should not be redistributed from this repository.
+Some laboratory materials reflect Ironhack coursework. The repository distinguishes original bootcamp work from later AI-assisted development. Paid or proprietary course content should not be redistributed from this repository.

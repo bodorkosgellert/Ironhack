@@ -4,3 +4,5 @@ seaborn>=0.13
 scikit-learn>=1.4
 jupyter>=1.0
 streamlit>=1.32
+# Optional dense / hybrid retrieval (local only; keep off Streamlit Cloud free tier):
+# pip install -r projects/local-llm-demo/requirements-hybrid.txt

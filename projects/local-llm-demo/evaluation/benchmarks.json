@@ -1,0 +1,64 @@
+[
+  {
+    "id": "pearson_metric",
+    "question": "What is the Pearson correlation between PM2.5 and asthma?",
+    "expected_source": "v2/outputs/metrics.json",
+    "expected_locator": "$.pearson_r_pm25_asthma"
+  },
+  {
+    "id": "cross_validated_r2",
+    "question": "What is the cross-validated R² for the PM2.5-only model?",
+    "expected_source": "v2/outputs/multivariate_metrics.json",
+    "expected_locator": "$.models[0].r2_cv_mean"
+  },
+  {
+    "id": "study_unit",
+    "question": "What is the unit of analysis and how many observations are there?",
+    "expected_source": "projects/asthma-air-pollution"
+  },
+  {
+    "id": "causality",
+    "question": "Does this study prove that PM2.5 causes asthma in individuals?",
+    "expected_source": "projects/asthma-air-pollution"
+  },
+  {
+    "id": "limitations",
+    "question": "What are the main limitations of the county analysis?",
+    "expected_source": "projects/asthma-air-pollution"
+  },
+  {
+    "id": "literature_design",
+    "question": "Why can the Alabama result differ from longitudinal asthma studies?",
+    "expected_source": "projects/asthma-air-pollution/LITERATURE.md"
+  },
+  {
+    "id": "outcome_distinction",
+    "question": "How do prevalence, incidence, and acute exacerbations differ in this analysis?",
+    "expected_source": "projects/asthma-air-pollution"
+  },
+  {
+    "id": "partial_correlation",
+    "question": "What is the adjusted partial correlation between PM2.5 and asthma?",
+    "expected_locator": "$.partial_correlations_vs_asthma.partial_r_pm25_ug_m3_annual_mean_vs_asthma"
+  },
+  {
+    "id": "bootstrap_interval",
+    "question": "What is the bootstrap confidence interval for the PM2.5 asthma correlation?",
+    "expected_locator": "$.pm25_asthma_association.bootstrap_95ci.ci_low"
+  },
+  {
+    "id": "exposure_spread",
+    "question": "What is the PM2.5 coefficient of variation?",
+    "expected_locator": "$.variance_analysis.pm25_ug_m3_annual_mean.cv"
+  },
+  {
+    "id": "same_source_metrics",
+    "question": "Why are the health-indicator model scores not independent validation?",
+    "expected_source": "projects/asthma-air-pollution"
+  },
+  {
+    "id": "outside_geography",
+    "question": "What is the specific PM2.5 effect estimate for California?",
+    "expect_refusal": true
+  }
+]

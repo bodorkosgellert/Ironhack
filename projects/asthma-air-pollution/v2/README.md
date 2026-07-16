@@ -2,6 +2,18 @@
 
 This directory contains my reproducible county-level analysis for Alabama in 2023. It evaluates fine particulate matter with an aerodynamic diameter of 2.5 micrometres or less, known as PM2.5. For scientific interpretation, start with the [project overview](../README.md) and [validation document](VALIDATION.md).
 
+I developed Version 2 iteratively with Cursor's coding agent under my direction, review, and local verification. See the repository's [AI-assisted development disclosure](../../../AI_ASSISTED_DEVELOPMENT.md).
+
+## Dashboard
+
+Open the [live Version 2 dashboard](https://ironhack-fk9xtt3fmoama8fdpvbzj.streamlit.app/), or run it locally from this directory:
+
+```bash
+streamlit run streamlit_app.py
+```
+
+This dashboard does not embed the local large language model assistant. For cited question answering over the public project corpus, use the separate app in [`projects/local-llm-demo`](../../local-llm-demo/) (`streamlit run streamlit_app.py` from that directory).
+
 ## Requirements
 
 - Python 3.10 or later
@@ -52,13 +64,7 @@ The pipeline creates:
 
 The current predictors are PM2.5, smoking prevalence, obesity prevalence, diabetes prevalence, physical inactivity prevalence, and binge drinking prevalence. Access to care and urbanicity are not included.
 
-## Dashboard
-
-After generating the outputs, run:
-
-```bash
-streamlit run streamlit_app.py
-```
+## Dashboard behavior
 
 The dashboard reads precomputed comma-separated value and JavaScript Object Notation files. It does not train models or call external application programming interfaces during display. If a figure is missing, rerun the corresponding analysis script.
 

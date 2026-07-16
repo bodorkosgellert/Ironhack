@@ -6,6 +6,7 @@ import json
 import re
 from pathlib import Path
 
+import altair as alt
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
@@ -70,6 +71,9 @@ def render_heatmap_from_json(matrix: dict) -> None:
 
 def main() -> None:
     st.set_page_config(page_title="Asthma × PM2.5 (v2)", layout="wide")
+    st.sidebar.caption(
+        "Dashboard build: 2026.07.15.2 · corrected interactive scatter plot"
+    )
     st.title("Asthma prevalence vs PM2.5 — Alabama counties (v2)")
     st.caption(
         "County-level CDC PLACES + Open-Meteo annual PM2.5. "
@@ -125,13 +129,94 @@ def main() -> None:
     col_scatter, col_table = st.columns([2, 1])
     with col_scatter:
         st.subheader("PM2.5 vs asthma prevalence")
-        chart_df = df[["pm25_ug_m3_annual_mean", "asthma_pct", "county"]].rename(
-            columns={
-                "pm25_ug_m3_annual_mean": "PM2.5 (µg/m³, annual mean)",
-                "asthma_pct": "Asthma prevalence (%)",
-            }
+        chart_columns = ["pm25_ug_m3_annual_mean", "asthma_pct"]
+        if "obesity_pct" in df.columns:
+            chart_columns.append("obesity_pct")
+
+        chart_df = df[["county", *chart_columns]].copy()
+        for column in chart_columns:
+            chart_df[column] = pd.to_numeric(chart_df[column], errors="coerce")
+        chart_df = chart_df.dropna(subset=["pm25_ug_m3_annual_mean", "asthma_pct"])
+
+        if chart_df.empty:
+            st.error(
+                "No counties have numeric values for both annual PM2.5 and asthma prevalence."
+            )
+        else:
+            tooltips = [
+                alt.Tooltip("county:N", title="County"),
+                alt.Tooltip(
+                    "pm25_ug_m3_annual_mean:Q",
+                    title="Annual mean PM2.5 (µg/m³)",
+                    format=".2f",
+                ),
+                alt.Tooltip(
+                    "asthma_pct:Q",
+                    title="Current adult asthma prevalence",
+                    format=".1f",
+                ),
+            ]
+            if "obesity_pct" in chart_df.columns:
+                tooltips.append(
+                    alt.Tooltip(
+                        "obesity_pct:Q",
+                        title="Obesity prevalence",
+                        format=".1f",
+                    )
+                )
+
+            points = (
+                alt.Chart(chart_df)
+                .mark_circle(size=105, opacity=0.78, color="#1565C0", stroke="white", strokeWidth=0.7)
+                .encode(
+                    x=alt.X(
+                        "pm25_ug_m3_annual_mean:Q",
+                        title="Annual mean PM2.5 (µg/m³)",
+                        scale=alt.Scale(zero=False, padding=0.25),
+                    ),
+                    y=alt.Y(
+                        "asthma_pct:Q",
+                        title="Current adult asthma prevalence (%)",
+                        scale=alt.Scale(zero=False, padding=0.25),
+                    ),
+                    tooltip=tooltips,
+                )
+            )
+            trend = (
+                alt.Chart(chart_df)
+                .transform_regression("pm25_ug_m3_annual_mean", "asthma_pct")
+                .mark_line(color="#D84315", strokeDash=[7, 4], strokeWidth=2)
+                .encode(
+                    x="pm25_ug_m3_annual_mean:Q",
+                    y="asthma_pct:Q",
+                )
+            )
+            chart = (points + trend).properties(
+                height=430,
+                title=alt.Title(
+                    "Alabama counties, 2023 — PM2.5 and current adult asthma prevalence",
+                    subtitle=[
+                        f"n={len(chart_df)}; Pearson r = "
+                        f"{chart_df['pm25_ug_m3_annual_mean'].corr(chart_df['asthma_pct']):.3f}",
+                        "Dashed line: descriptive ordinary least-squares trend (not causal).",
+                    ],
+                ),
+            ).configure_axis(
+                gridColor="#E5E7EB",
+                labelColor="#263238",
+                titleColor="#263238",
+            )
+            st.altair_chart(chart, width="stretch")
+
+        st.caption(
+            "**Sources:** Centers for Disease Control and Prevention PLACES "
+            "(2023 county current adult asthma and obesity prevalence estimates); "
+            "Open-Meteo (2023 gridded annual PM2.5 averaged at county centroids)."
         )
-        st.scatter_chart(chart_df, x="PM2.5 (µg/m³, annual mean)", y="Asthma prevalence (%)")
+        st.caption(
+            "**Limitation:** This is an ecological county-level comparison. Annual averages "
+            "can hide local and short-term exposure differences."
+        )
     with col_table:
         st.subheader("Sample counties")
         st.dataframe(
