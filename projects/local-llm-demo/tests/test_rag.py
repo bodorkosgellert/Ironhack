@@ -5,6 +5,7 @@ import unittest
 from rag.assistant import EvidenceAssistant
 from rag.corpus import PUBLIC_JSON, PUBLIC_MARKDOWN, build_corpus
 from rag.metrics import exact_metric_chunks
+from rag.ollama import OllamaStatus
 from rag.retrieval import LexicalRetriever
 
 
@@ -96,6 +97,59 @@ class RetrievalTests(unittest.TestCase):
             self.assertTrue(item.chunk.source)
             self.assertTrue(item.chunk.locator)
             self.assertIn(" — ", item.citation)
+
+
+class GeneratedAnswerCompositionTests(unittest.TestCase):
+    MODEL = "mock:model"
+
+    def setUp(self) -> None:
+        self.calls: list[str] = []
+
+    def assistant(self, response: str) -> EvidenceAssistant:
+        def mocked_chat(*args, **kwargs) -> str:
+            self.calls.append(args[0])
+            return response
+
+        return EvidenceAssistant(
+            status_fn=lambda: OllamaStatus(True, (self.MODEL,)),
+            chat_fn=mocked_chat,
+        )
+
+    def test_exact_pearson_and_citation_override_wrong_model_number(self) -> None:
+        answer = self.assistant("The Pearson correlation is -0.99.").ask(
+            "What is the exact Pearson correlation between PM2.5 and asthma?",
+            model=self.MODEL,
+        )
+        self.assertIn("-0.05726740504810031", answer.text)
+        self.assertIn("metrics.json — $.pearson_r_pm25_asthma", answer.text)
+        self.assertNotIn("-0.99", answer.text)
+        self.assertIn("omitted", answer.notice or "")
+
+    def test_exact_cross_validated_r2_survives_model_omission(self) -> None:
+        answer = self.assistant("The retrieved evidence indicates weak predictive performance.").ask(
+            "What is the cross-validated R² for the PM2.5-only model?",
+            model=self.MODEL,
+        )
+        self.assertIn("-0.321694185275063", answer.text)
+        self.assertIn("$.models[0].r2_cv_mean", answer.text)
+        self.assertIn("Optional model interpretation", answer.text)
+
+    def test_citations_are_appended_when_model_omits_them(self) -> None:
+        answer = self.assistant("This is an ecological county-level analysis.").ask(
+            "Does this study prove that PM2.5 causes asthma in individuals?",
+            model=self.MODEL,
+        )
+        self.assertIn("Retrieved citations:", answer.text)
+        self.assertIn("projects/asthma-air-pollution/", answer.text)
+
+    def test_unsupported_geography_bypasses_generation(self) -> None:
+        answer = self.assistant("This must never be returned.").ask(
+            "What is the specific PM2.5 effect estimate for California?",
+            model=self.MODEL,
+        )
+        self.assertTrue(answer.refused)
+        self.assertFalse(answer.generation_used)
+        self.assertFalse(self.calls)
 
 
 if __name__ == "__main__":

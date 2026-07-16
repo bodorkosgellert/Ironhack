@@ -1,8 +1,24 @@
 # Local cited evidence assistant
 
-I built this local retrieval-augmented generation (RAG) assistant to explain the existing public results of my Alabama asthma and fine particulate matter analysis. It retrieves traceable passages before answering and can use a local Ollama model without sending repository content to a hosted model.
+I built this local retrieval-augmented generation (RAG) assistant to explain the existing public results of my Alabama asthma and fine particulate matter analysis. It retrieves traceable passages before answering and can use a local Ollama model without sending repository content to a hosted model. See the [model evaluation](MODEL_EVALUATION.md) for the verified raw-model and complete-assistant results.
 
 The assistant is an explanatory layer over saved aggregate evidence. It does not modify data, rerun statistical scripts, produce new epidemiological estimates, or support causal conclusions.
+
+## Implemented capabilities
+
+- evidence navigation across methods, literature, validation notes, and saved outputs;
+- exact metric lookup from allowlisted JSON key paths;
+- deterministic source-path and locator citations;
+- explanation of epidemiological limitations and outcome definitions;
+- unsupported-geography refusal before generation;
+- fixed retrieval, guardrail, and model-comparison benchmarks;
+- optional local narration with deterministic fallback.
+
+## Practical use cases
+
+Within this project, the assistant supports exact result lookup, reproducibility guidance, interpretation of ecological limitations, source inspection, local-model comparison, and guardrail testing. Local narration can remain offline, although the indexed material here is public aggregate evidence rather than private patient data.
+
+The same architecture could be adapted to compliance and policy lookup, quality manuals and standard operating procedures, financial-report metric lookup, scientific evidence synthesis, internal analytics documentation, or technical-support knowledge bases. Those are analogous examples, not features implemented here. In regulated, financial, scientific, or safety-sensitive settings, human review and the authoritative source remain necessary.
 
 ## Architecture
 
@@ -12,8 +28,8 @@ The implementation deliberately uses the repository's existing scikit-learn depe
 2. Markdown is divided along heading boundaries. Long sections use paragraph-aware chunks with a small overlap.
 3. Every JSON leaf becomes stable text containing its exact key path, context label, and stored value.
 4. `rag/retrieval.py` builds an in-memory term frequency-inverse document frequency index and ranks passages with cosine similarity.
-5. `rag/metrics.py` routes recognised numeric intents directly to exact JSON leaves before lexical results are added.
-6. `rag/assistant.py` applies a configurable low-score refusal threshold and optionally sends only the retrieved context to Ollama.
+5. `rag/metrics.py` routes recognised numeric intents to allowlisted JSON key paths and loads their values directly from the source files.
+6. `rag/assistant.py` renders routed values and citations in application code before optional Ollama narration. Conflicting numeric narration is discarded.
 7. `streamlit_app.py` and `rag/ask.py` expose the same assistant through graphical and command-line interfaces.
 
 The index is rebuilt quickly in memory. No embeddings, model data, or machine-specific index are required in Git.
@@ -38,7 +54,15 @@ The system prompt requires the local model to:
 - avoid causal and individual-level claims from this county ecological study;
 - report holdout and cross-validated metrics with appropriate uncertainty.
 
-Deterministic metric routing is important because language-model retrieval alone is not a reliable numeric lookup method. For example, a Pearson question retrieves the full stored value from `$.pearson_r_pm25_asthma`, while a PM2.5-only cross-validation question retrieves `$.models[0].r2_cv_mean`. Ollama may explain these values but is instructed not to calculate new ones.
+Prompt instructions are not the numeric safeguard. Deterministic metric routing is important because local generation did not reliably preserve exact values. For example, a Pearson question loads the full stored value from `$.pearson_r_pm25_asthma`, while a PM2.5-only cross-validation question loads `$.models[0].r2_cv_mean`. Application code displays each exact value and source/key-path citation first. Ollama may add clearly labelled interpretation, but it cannot replace the deterministic block; narration containing a conflicting numeric value is omitted.
+
+## What this project demonstrates
+
+I designed the assistant so deterministic evidence lookup and probabilistic language generation have separate responsibilities. Exact metrics and their citations come from stored JSON key paths and application code; a local model may narrate the retrieved evidence, but it cannot improve, rerun, or replace the epidemiological analysis. The interface refuses unsupported geographies before generation and adds retrieved source citations independently of model compliance.
+
+The project also demonstrates practical local-model operations: consistent prompts and retrieval settings, bounded timeouts, automatic checks for numeric and citation compliance, and graceful fallback when Ollama or a requested model is unavailable. Local execution gives control over model availability and data flow. It is not presented as a privacy necessity here, because the indexed materials are public, aggregate county evidence rather than patient records.
+
+My engineering contribution is the complete evidence boundary: corpus allowlisting, deterministic JSON routing, refusal behavior, composed answer rendering, fixed evaluation cases, failure recording, command-line and Streamlit interfaces, and documentation. Development provenance is documented in the repository's [AI-assisted development disclosure](../../AI_ASSISTED_DEVELOPMENT.md).
 
 ## Windows setup
 
@@ -61,7 +85,7 @@ python -m rag.ask --lexical-only --show-sources --top-k 5 "Why can this study no
 I use [Ollama](https://ollama.com/download/windows) for optional local generation. Installation and model download are manual; the application never starts a multi-gigabyte download:
 
 ```powershell
-ollama pull llama3.2:3b
+ollama pull qwen2.5-coder:3b
 ollama serve
 ollama list
 ```
@@ -70,33 +94,83 @@ In a second PowerShell window:
 
 ```powershell
 Set-Location projects\local-llm-demo
-python -m rag.ask --model llama3.2:3b "What is the PM2.5-only cross-validated R²?"
+python -m rag.ask --model qwen2.5-coder:3b "What is the PM2.5-only cross-validated R²?"
 streamlit run streamlit_app.py
 ```
 
 If Ollama is stopped or the requested model is absent, both interfaces show setup guidance and continue with cited lexical retrieval.
 
-## Corpus inspection, tests, and evaluation
+## How to test the assistant
 
-From `projects/local-llm-demo`:
+Run each command from `projects/local-llm-demo`.
+
+1. **Retrieval-only smoke test:** this isolates corpus construction, exact metric routing, ranking, and citations from model behavior.
+
+   ```powershell
+   python -m rag.ask --retrieval-only --show-sources "What is the exact Pearson correlation between PM2.5 and asthma?"
+   python -m rag.ask --retrieval-only "What is the specific PM2.5 effect estimate for California?"
+   ```
+
+2. **Generated-answer test:** choose an exact name reported by `ollama list`. For a routed metric, the application-owned authoritative block must contain the stored value and source/key-path citation even if narration is omitted. The `Retrieved citations` list is also generated from passage metadata rather than entrusted to the model.
+
+   ```powershell
+   python -m rag.ask --model <installed-model> --show-sources "What is the cross-validated R² for the PM2.5-only model?"
+   ```
+
+3. **Streamlit test:** first check existing terminals so that a second server is not started, then run `streamlit run streamlit_app.py` if needed. Test one metric question, one interpretation question, and the California refusal. Expand `Retrieved sources` and compare the answer with the quoted passages and JSON key paths.
+
+4. **Unit and retrieval tests:**
+
+   ```powershell
+   python -m unittest discover -s tests -v
+   python evaluate.py
+   ```
+
+   The fixed retrieval benchmark writes the ignored `outputs/benchmark.json`. A valid run should retrieve the expected path or locator and refuse the unsupported geography; it does not assess prose quality.
+
+When reviewing an answer, verify the exact numeric string against the cited JSON leaf, check that every factual generated claim has an inline citation, and confirm that county-level associations are not described as individual or causal effects. For unsupported questions, the correct behavior is an explicit evidence refusal, not a fluent guess.
+
+To report a failure reproducibly, include the exact command and question, operating system, Python and Ollama versions, exact model name from `ollama list`, relevant `ollama show <model>` output, timeout and top-k settings, whether Ollama's health endpoint responds, and the generated comparison row. Include available random-access memory (RAM) and processor or graphics hardware when reporting latency. Remove secrets and avoid attaching unrelated local data.
+
+## Model evaluation
+
+`compare_models.py` uses five fixed questions covering exact metrics, ecological causality, outcome definitions, and unsupported geography. `--mode raw` scores model output alone. `--mode assistant` scores the composed answer, including application-owned values, citations, and refusal behavior.
 
 ```powershell
-python -m rag.index
-python -m unittest discover -s tests -v
-python evaluate.py
+ollama list
+python compare_models.py --mode raw --models <model> --limit 5 --timeout 120 --output outputs/model_comparison_raw.csv
+python compare_models.py --mode assistant --models <model> --limit 5 --timeout 120 --output outputs/model_comparison_assistant.csv
 ```
 
-The benchmark contains fixed questions about metrics, methodology, limitations, literature, outcome definitions, and an unsupported California estimate. The evaluator runs without Ollama, records ranked paths and locators, and writes `outputs/benchmark.json`. This generated report is ignored by Git.
+The verified results are 20/20 unit tests, 12/12 deterministic retrieval cases, and 5/5 cases with 18/18 objective checks for the hardened Qwen assistant. Raw Qwen passed only 1/5 complete cases and 14/18 checks; the other two raw models timed out or failed. The assistant score is an architecture result, not raw-model superiority. Full methodology, timings, limitations, and reproducible commands are in [MODEL_EVALUATION.md](MODEL_EVALUATION.md). Generated reports remain ignored.
+
+## Industry context and repository prevalence
+
+Basic document-chat and RAG projects are common tutorial and beginner portfolio patterns. [GitHub RAG topic pages](https://github.com/topics/retrieval-augmented-generation-rag) show examples, but they do not provide a reliable denominator for all beginner repositories, so I do not claim a percentage. More substantive elements here are deterministic structured-data routing, refusal tests, citation checks, fixed benchmarks, raw-versus-system comparison, and explicit failure documentation.
+
+This small project does not match enterprise scale, security, or operations. It does share architectural patterns with:
+
+- [Azure AI Search](https://learn.microsoft.com/en-us/azure/app-service/tutorial-ai-openai-search-python), which documents hybrid retrieval and citation-backed RAG;
+- [Amazon Bedrock Knowledge Bases](https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-retrieve-generate.html), which returns generated responses with source references;
+- [Google grounding with Agent Search](https://cloud.google.com/vertex-ai/generative-ai/docs/grounding/grounding-with-vertex-ai-search), which connects response segments to retrieved chunks;
+- [Elastic RAG](https://www.elastic.co/docs/solutions/search/rag), which supports full-text, vector, and hybrid retrieval;
+- [OpenAI file search](https://platform.openai.com/docs/guides/tools-file-search), which provides managed file retrieval and result annotations.
+
+Across these systems, recurring patterns include retrieval, grounding, structured tools, citations, guardrails, evaluation, and observability.
 
 ## Limitations
 
 - Term frequency-inverse document frequency retrieval recognises wording overlap, not deep semantic equivalence. The metric router covers the most important stored numeric intents but is not a general query language.
 - The refusal threshold is a practical safeguard, not a calibrated probability of answerability.
-- A local language model can still produce poorly worded or incompletely cited narration. Retrieved passages remain the authoritative evidence shown below each answer.
+- A local language model can still produce poorly worded, unsupported, or incompletely cited non-numeric narration. The deterministic metric block and retrieved passages remain authoritative.
 - The corpus covers one small, cross-sectional Alabama county study. It cannot provide other-state estimates, patient advice, individual risks, or causal effects.
 - The source analysis has 67 counties, model-based Centers for Disease Control and Prevention PLACES outcomes, narrow PM2.5 exposure contrast, correlated predictors, and uncertain split-specific metrics.
-- This implementation does not persist embeddings or evaluate generative faithfulness automatically. A polished version would add a larger paraphrase benchmark, citation-entailment review, latency tracking across machines, and interface accessibility testing.
+- The generation harness checks exact, observable requirements but cannot prove that every sentence is entailed by its citation. A stronger evaluation would add blinded human review, a larger paraphrase benchmark, citation-entailment assessment, latency comparisons across machines, and interface accessibility testing.
 
 ## Cloud limitation
 
 Streamlit Community Cloud cannot reach Ollama running on my local Windows machine. A cloud deployment would therefore provide retrieval-only behavior unless it used a separately hosted model service. This project intentionally contains no hosted application programming interface key or fallback.
+
+## Future work
+
+I plan to evaluate hybrid lexical and semantic retrieval, reranking, larger paraphrase sets, citation-faithfulness review, and an optional hosted fallback with an explicit data boundary. A production extension would add a FastAPI service, deployment checks, structured logging, latency monitoring, and access controls.

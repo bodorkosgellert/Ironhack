@@ -2,6 +2,8 @@
 
 This directory contains my reproducible county-level analysis for Alabama in 2023. It evaluates fine particulate matter with an aerodynamic diameter of 2.5 micrometres or less, known as PM2.5. For scientific interpretation, start with the [project overview](../README.md) and [validation document](VALIDATION.md).
 
+I developed Version 2 iteratively with Cursor's coding agent under my direction, review, and local verification. See the repository's [AI-assisted development disclosure](../../../AI_ASSISTED_DEVELOPMENT.md).
+
 ## Dashboard
 
 Open the [live Version 2 dashboard](https://ironhack-fk9xtt3fmoama8fdpvbzj.streamlit.app/), or run it locally from this directory:

@@ -4,12 +4,15 @@ I ask whether annual mean fine particulate matter with an aerodynamic diameter o
 
 I began this project as my 2021 Ironhack capstone and rebuilt it in 2026 to make the data integration reproducible and the scientific interpretation more careful.
 
+Version 1 is my original bootcamp work. I developed the 2026 restructuring, Version 2, documentation, and dashboard iteratively with Cursor's coding agent under my direction and review. The repository's [AI-assisted development disclosure](../../AI_ASSISTED_DEVELOPMENT.md) explains the development and verification roles.
+
 ## Live demonstration
 
 - [Live Version 2 dashboard](https://ironhack-fk9xtt3fmoama8fdpvbzj.streamlit.app/)
 - [Version 2 source and technical runbook](v2/)
 - [Statistical validation](v2/VALIDATION.md)
 - [Literature and study-design comparison](LITERATURE.md)
+- [Local cited evidence assistant](../local-llm-demo/)
 
 ## Result summary
 

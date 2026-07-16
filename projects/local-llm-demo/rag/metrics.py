@@ -2,16 +2,35 @@
 
 from __future__ import annotations
 
+import json
 import re
 from dataclasses import dataclass
+from typing import Any
 
-from .corpus import Chunk
+from .corpus import ASTHMA_ROOT, Chunk
 
 
 @dataclass(frozen=True)
 class MetricTarget:
     source_suffix: str
     locator: str
+
+
+@dataclass(frozen=True)
+class MetricFact:
+    """An exact JSON value resolved independently of language generation."""
+
+    source: str
+    locator: str
+    value: Any
+
+    @property
+    def citation(self) -> str:
+        return f"{self.source} — {self.locator}"
+
+    @property
+    def rendered_value(self) -> str:
+        return json.dumps(self.value, ensure_ascii=False, sort_keys=True)
 
 
 def _normalise(question: str) -> str:
@@ -82,6 +101,25 @@ def exact_metric_chunks(question: str, chunks: list[Chunk]) -> list[Chunk]:
         for chunk in chunks
         if chunk.source.endswith(target.source_suffix) and chunk.locator == target.locator
     ]
+
+
+def _value_at_path(data: Any, locator: str) -> Any:
+    """Resolve the restricted JSONPath syntax emitted by ``corpus.py``."""
+    value = data
+    tokens = re.findall(r"(?:^|\.)?([A-Za-z0-9_]+)|\[(\d+)\]", locator.removeprefix("$"))
+    for key, index in tokens:
+        value = value[int(index)] if index else value[key]
+    return value
+
+
+def exact_metric_facts(question: str, chunks: list[Chunk]) -> list[MetricFact]:
+    """Load recognised metrics from their allowlisted JSON files by key path."""
+    facts: list[MetricFact] = []
+    for chunk in exact_metric_chunks(question, chunks):
+        relative = chunk.source.removeprefix("projects/asthma-air-pollution/")
+        data = json.loads((ASTHMA_ROOT / relative).read_text(encoding="utf-8"))
+        facts.append(MetricFact(chunk.source, chunk.locator, _value_at_path(data, chunk.locator)))
+    return facts
 
 
 def is_numeric_question(question: str) -> bool:

@@ -6,7 +6,9 @@ I use this directory to document ongoing learning without copying proprietary co
 
 ### Artificial intelligence engineering
 
-I am working through material on Python-based model application programming interfaces, prompt design, evaluation, deployment, and responsible use of large language models. My related code is maintained separately where course licensing permits.
+I am currently at Lab 2 in the SuperDataScience artificial intelligence engineering online course and plan to join a six-month neue fische artificial intelligence engineering training program. These are current-study and planned-study statements, not completion or enrollment claims beyond that wording.
+
+I am working through material on Python-based model application programming interfaces, prompt design, evaluation, deployment, and responsible use of large language models. My related code is maintained separately where course licensing permits. See my [learning roadmap](ROADMAP.md) for the public curriculum context, skill progression, and planned portfolio projects.
 
 ### Agent and communications systems
 
@@ -16,4 +18,4 @@ I have completed practical workshops involving messaging and voice application p
 
 I include only original summaries, experiments, and links that I am permitted to share. I do not publish paid course notebooks, credentials, environment files, or application programming interface keys.
 
-For my completed capstone work, see the [asthma and air pollution project](../projects/asthma-air-pollution/).
+For my completed capstone work, see the [asthma and air pollution project](../projects/asthma-air-pollution/). The repository's [AI-assisted development disclosure](../AI_ASSISTED_DEVELOPMENT.md) explains how I used Cursor during the 2026 project work.

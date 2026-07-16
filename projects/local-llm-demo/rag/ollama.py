@@ -8,7 +8,7 @@ import urllib.request
 from dataclasses import dataclass
 
 DEFAULT_BASE_URL = "http://127.0.0.1:11434"
-DEFAULT_MODEL = "llama3.2:3b"
+DEFAULT_MODEL = "qwen2.5-coder:3b"
 
 
 class OllamaError(RuntimeError):
@@ -49,11 +49,13 @@ def chat(
     user_prompt: str,
     base_url: str = DEFAULT_BASE_URL,
     timeout: float = 120.0,
+    num_predict: int = 350,
+    temperature: float = 0,
 ) -> str:
     payload = {
         "model": model,
         "stream": False,
-        "options": {"temperature": 0},
+        "options": {"temperature": temperature, "num_predict": num_predict},
         "messages": [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},

@@ -27,6 +27,7 @@ projects/asthma-air-pollution/v2/figures/*
 # Local cited assistant generated artifacts
 projects/local-llm-demo/data/chunks.jsonl
 projects/local-llm-demo/outputs/benchmark.json
+projects/local-llm-demo/outputs/model_comparison*.*
 projects/local-llm-demo/.rag-cache/
 
 # OS / editor
