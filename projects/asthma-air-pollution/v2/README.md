@@ -6,13 +6,13 @@ I developed Version 2 iteratively with Cursor's coding agent under my direction,
 
 ## Dashboard
 
-Open the [live Version 2 dashboard](https://ironhack-fk9xtt3fmoama8fdpvbzj.streamlit.app/), or run it locally from this directory:
+Open the [County dashboard (charts)](https://alabama-asthma-pm25.streamlit.app/), or run it locally from this directory:
 
 ```bash
 streamlit run streamlit_app.py
 ```
 
-This dashboard does not embed the local large language model assistant. For cited question answering over the public project corpus, use the separate app in [`projects/local-llm-demo`](../../local-llm-demo/) (`streamlit run streamlit_app.py` from that directory).
+This dashboard does not embed the evidence assistant. For cited question answering over the public project corpus, open the [Evidence assistant (Q&A)](https://asthma-evidence-assistant.streamlit.app/) or run the separate app in [`projects/local-llm-demo`](https://github.com/bodorkosgellert/Ironhack/tree/main/projects/local-llm-demo) (`streamlit run streamlit_app.py` from that directory).
 
 ## Requirements
 

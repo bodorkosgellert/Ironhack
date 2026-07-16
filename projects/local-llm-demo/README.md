@@ -4,7 +4,14 @@ I built this local retrieval-augmented generation (RAG) assistant to explain the
 
 The assistant is an explanatory layer over saved aggregate evidence. It does not modify data, rerun statistical scripts, produce new epidemiological estimates, or support causal conclusions.
 
-This Streamlit app is **separate** from the Version 2 epidemiology dashboard in `projects/asthma-air-pollution/v2/streamlit_app.py`. The dashboard does not embed this assistant; use the launch commands below for each app.
+This Streamlit app is **separate** from the Version 2 epidemiology dashboard in `projects/asthma-air-pollution/v2/streamlit_app.py`. The dashboard does not embed this assistant; use the live links or launch commands below for each app.
+
+## Live demonstration
+
+- [Evidence assistant (Q&A)](https://asthma-evidence-assistant.streamlit.app/)
+- [County dashboard (charts)](https://alabama-asthma-pm25.streamlit.app/)
+- [Assistant source on `main`](https://github.com/bodorkosgellert/Ironhack/tree/main/projects/local-llm-demo)
+- [Dashboard source on `main`](https://github.com/bodorkosgellert/Ironhack/tree/main/projects/asthma-air-pollution/v2)
 
 ## Implemented capabilities
 
@@ -147,6 +154,8 @@ Environment variables: `RETRIEVAL_MODE`, `RETRIEVAL_LEXICAL_WEIGHT`, `RETRIEVAL_
 The first dense run may download model weights and needs network access. If `sentence-transformers` is missing, hybrid and dense modes fall back to TF-IDF with a status notice. I keep `sentence-transformers` out of the main repository `requirements.txt` so Streamlit Community Cloud stays lean; install `requirements-hybrid.txt` only on machines that need dense retrieval.
 
 ## Online hosting for GitHub visitors
+
+The live [Evidence assistant (Q&A)](https://asthma-evidence-assistant.streamlit.app/) is deployed from `main`. It pairs with the [County dashboard (charts)](https://alabama-asthma-pm25.streamlit.app/).
 
 Streamlit Community Cloud **cannot** reach Ollama on my Windows machine. Opening a deployed `streamlit_app.py` does **not** run local models on visitors' computers or on my personal computer. The cloud container runs the Python code on Streamlit's servers.
 

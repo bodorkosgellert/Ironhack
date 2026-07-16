@@ -81,6 +81,9 @@ def main() -> None:
         "It does not modify or rerun the epidemiological analysis. "
         "This app is separate from the Version 2 epidemiology dashboard."
     )
+    st.markdown(
+        "[County dashboard (charts)](https://alabama-asthma-pm25.streamlit.app/)"
+    )
 
     ollama = _ollama_status()
     hosted_ok, hosted_model = hosted_status(_streamlit_secrets())
@@ -91,6 +94,11 @@ def main() -> None:
     embeddings = dense_status()
 
     with st.sidebar:
+        st.markdown(
+            "[County dashboard (charts)](https://alabama-asthma-pm25.streamlit.app/)"
+        )
+        st.caption("Separate app: interactive county charts and saved metrics.")
+        st.divider()
         st.header("Runtime status")
         if ollama.available:
             st.success("Ollama available (local)")
@@ -216,6 +224,12 @@ def main() -> None:
         "Safeguards: public allowlisted files only; exact JSON key paths for metrics; "
         "deterministic metric routing remains authoritative; no causal inference. "
         "Optional hosted generation uses Streamlit secrets or environment variables and is never committed."
+    )
+    st.markdown(
+        "Related app: [County dashboard (charts)](https://alabama-asthma-pm25.streamlit.app/) "
+        "· Source: "
+        "[`projects/local-llm-demo` on `main`]"
+        "(https://github.com/bodorkosgellert/Ironhack/tree/main/projects/local-llm-demo)"
     )
 
 

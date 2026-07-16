@@ -6,8 +6,8 @@ This repository brings together my Ironhack Data Analytics bootcamp work from 20
 
 | Area | Description |
 |---|---|
-| [`projects/asthma-air-pollution/`](projects/asthma-air-pollution/) | Fine particulate matter and adult asthma prevalence: [Live demo](https://ironhack-fk9xtt3fmoama8fdpvbzj.streamlit.app/) · [Source](projects/asthma-air-pollution/v2/) |
-| [`projects/local-llm-demo/`](projects/local-llm-demo/) | A local cited evidence assistant with deterministic metric routing and model evaluation |
+| [`projects/asthma-air-pollution/`](projects/asthma-air-pollution/) | Fine particulate matter and adult asthma prevalence: [County dashboard (charts)](https://alabama-asthma-pm25.streamlit.app/) · [Source](projects/asthma-air-pollution/v2/) |
+| [`projects/local-llm-demo/`](projects/local-llm-demo/) | Cited evidence assistant with deterministic metric routing and model evaluation: [Evidence assistant (Q&A)](https://asthma-evidence-assistant.streamlit.app/) · [Source](projects/local-llm-demo/) |
 | [`learning/`](learning/) | Notes and a roadmap for my continuing technical education |
 | [`labs/`](labs/) | Selected classroom exercises in Python, Structured Query Language, natural language processing, and computer vision |
 | [`archive/bootcamp-original/`](archive/bootcamp-original/) | The original bootcamp upload, preserved without editorial changes |
@@ -20,7 +20,7 @@ Version 2 uses 67 counties, a reproducible county key, Centers for Disease Contr
 
 Read the [project overview](projects/asthma-air-pollution/README.md) for the research question, results, limitations, and reproduction steps.
 
-The companion [local evidence assistant](projects/local-llm-demo/) provides cited navigation across the project's public methods, literature, and saved outputs. Its [evaluation](projects/local-llm-demo/MODEL_EVALUATION.md) distinguishes unreliable raw model generation from hardened assistant behavior.
+The companion [Evidence assistant (Q&A)](https://asthma-evidence-assistant.streamlit.app/) provides cited navigation across the project's public methods, literature, and saved outputs ([source](projects/local-llm-demo/)). Its [evaluation](projects/local-llm-demo/MODEL_EVALUATION.md) distinguishes unreliable raw model generation from hardened assistant behavior.
 
 ## Development provenance
 

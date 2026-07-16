@@ -8,13 +8,15 @@ Version 1 is my original bootcamp work. I developed the 2026 restructuring, Vers
 
 ## Live demonstration
 
-- [Live Version 2 dashboard](https://ironhack-fk9xtt3fmoama8fdpvbzj.streamlit.app/)
-- [Version 2 source and technical runbook](v2/)
+- [County dashboard (charts)](https://alabama-asthma-pm25.streamlit.app/)
+- [Evidence assistant (Q&A)](https://asthma-evidence-assistant.streamlit.app/)
+- [Version 2 source on `main`](https://github.com/bodorkosgellert/Ironhack/tree/main/projects/asthma-air-pollution/v2)
+- [Version 2 technical runbook](v2/)
 - [Statistical validation](v2/VALIDATION.md)
 - [Literature and study-design comparison](LITERATURE.md)
-- [Local cited evidence assistant](../local-llm-demo/) (separate Streamlit app; not embedded in this dashboard)
+- [Evidence assistant source](../local-llm-demo/) (separate Streamlit app; not embedded in the dashboard)
 
-The Version 2 epidemiology dashboard and the local evidence assistant are different applications. Launch the dashboard with `streamlit run streamlit_app.py` from `v2/`. Launch the assistant from `projects/local-llm-demo` with `streamlit run streamlit_app.py` after Ollama is running if you want local narration. See the [assistant README](../local-llm-demo/README.md) for hybrid retrieval, Streamlit Cloud limits, and the honest privacy framing for future confidential corpora.
+The Version 2 epidemiology dashboard and the evidence assistant are different applications. Open the live links above, or launch locally: `streamlit run streamlit_app.py` from `v2/` for charts, and from `projects/local-llm-demo` for Q&A (start Ollama if you want local narration). See the [assistant README](../local-llm-demo/README.md) for hybrid retrieval, Streamlit Cloud limits, and the honest privacy framing for future confidential corpora.
 
 ## Result summary
 

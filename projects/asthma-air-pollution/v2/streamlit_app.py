@@ -85,6 +85,11 @@ def main() -> None:
     feature = load_json(str(FEATURE_JSON))
 
     with st.sidebar:
+        st.markdown(
+            "[Evidence assistant (Q&A)](https://asthma-evidence-assistant.streamlit.app/)"
+        )
+        st.caption("Separate app: cited answers over the public project corpus.")
+        st.divider()
         st.header("Key metrics")
         if metrics:
             st.metric("Pearson r (PM2.5 × asthma)", f"{metrics.get('pearson_r_pm25_asthma', 0):.3f}")
@@ -284,6 +289,14 @@ def main() -> None:
         with st.expander(f"{label} — `{fname}`"):
             st.markdown(excerpt)
             st.markdown(f"Full file: `{rel.as_posix()}`")
+
+    st.divider()
+    st.markdown(
+        "Related app: [Evidence assistant (Q&A)](https://asthma-evidence-assistant.streamlit.app/) "
+        "· Source: "
+        "[`projects/asthma-air-pollution/v2` on `main`]"
+        "(https://github.com/bodorkosgellert/Ironhack/tree/main/projects/asthma-air-pollution/v2)"
+    )
 
 
 if __name__ == "__main__":
