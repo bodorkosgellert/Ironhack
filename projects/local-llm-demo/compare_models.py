@@ -157,6 +157,7 @@ def compare(
     chat_fn: Callable[..., str] = chat,
     retriever: LexicalRetriever | None = None,
     mode: str = "raw",
+    continue_on_error: bool = False,
 ) -> list[dict]:
     """Compare raw model compliance or complete assistant correctness."""
     if mode not in {"raw", "assistant"}:
@@ -260,7 +261,7 @@ def compare(
                     **scored,
                 }
             )
-            if error:
+            if error and not continue_on_error:
                 remaining = selected_cases[case_index + 1:]
                 records.extend(
                     _error_records(
@@ -333,6 +334,11 @@ def build_parser() -> argparse.ArgumentParser:
         default="raw",
         help="Score raw model output or the end-to-end assistant composition",
     )
+    parser.add_argument(
+        "--continue-on-error",
+        action="store_true",
+        help="Keep scoring remaining cases after a timeout or transport failure",
+    )
     return parser
 
 
@@ -342,7 +348,13 @@ def main() -> int:
         raise SystemExit("--limit must be at least 1")
     if args.timeout <= 0:
         raise SystemExit("--timeout must be positive")
-    records = compare(args.models, limit=args.limit, timeout=args.timeout, mode=args.mode)
+    records = compare(
+        args.models,
+        limit=args.limit,
+        timeout=args.timeout,
+        mode=args.mode,
+        continue_on_error=args.continue_on_error,
+    )
     csv_path, json_path = write_results(records, args.output)
     for summary in summarise(records):
         print(

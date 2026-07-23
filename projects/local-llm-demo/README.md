@@ -229,7 +229,7 @@ python compare_models.py --mode raw --models <model> --limit 5 --timeout 120 --o
 python compare_models.py --mode assistant --models <model> --limit 5 --timeout 120 --output outputs/model_comparison_assistant.csv
 ```
 
-The verified results are 37/37 unit tests (plus hybrid fusion tests in the same suite), 16/16 deterministic retrieval cases, and 5/5 cases with 18/18 objective checks for the hardened Qwen assistant. Raw Qwen passed only 1/5 complete cases and 14/18 checks; the other two raw models timed out or failed. The assistant score is an architecture result, not raw-model superiority. Full methodology, timings, limitations, and reproducible commands are in [MODEL_EVALUATION.md](MODEL_EVALUATION.md). Generated reports remain ignored.
+The verified results are 37/37 unit tests (plus hybrid fusion tests in the same suite), 16/16 deterministic retrieval cases, and 5/5 cases with 18/18 objective checks for the hardened Qwen assistant. On a longer raw comparison (`--timeout 360`, continue-on-error), Llama led complete cases (4/5) and objective checks (17/18), Qwen was fastest (3/5, 16/18), and DeepSeek passed only 1/5 complete cases. None of the raw models matched the assistant’s 5/5 / 18/18; that score is an architecture result, not raw-model superiority. Full methodology, timings, limitations, and reproducible commands are in [MODEL_EVALUATION.md](MODEL_EVALUATION.md). Generated reports remain ignored.
 
 ## Industry context and repository prevalence
 
